@@ -1,16 +1,18 @@
 import { useRef } from "react"
 import { CameraControls, Environment, Grid, PerspectiveCamera } from "@react-three/drei"
+
 import { GradientSky } from "../components/GradientSky"
+import { AxeController } from "./AxeController.tsx"
 
 export const Experience = () => {
-  const controls = useRef()
+  const controls = useRef(null)
 
   return (
     <>
       <CameraControls ref={controls} />
 
       {/* NOTE: Position sends the target far away */}
-      {/* NOTE: App |> EffectComposer |> Bloom lights up the orange emmisive */}
+      {/* NOTE: App |> EffectComposer |> Bloom lights up the orange `color` & `emissive` */}
       <mesh position-x={10}>
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial // force-line-break
@@ -20,8 +22,11 @@ export const Experience = () => {
         />
       </mesh>
 
-      {/* Immersion */}
       <GradientSky />
+
+      <AxeController />
+
+      {/* Immersion */}
       <Grid // force-line-break
         position-y={-10}
         infiniteGrid
@@ -31,7 +36,7 @@ export const Experience = () => {
       />
       <directionalLight // force-line-break
         position={[30, 15, 30]}
-        castShadow
+        castShadow={true}
         intensity={1}
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}

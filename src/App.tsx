@@ -1,15 +1,20 @@
 import { Suspense } from "react"
-
 import { Loader, PositionalAudio, useGLTF } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { Bloom, EffectComposer } from "@react-three/postprocessing"
 
 import { Experience } from "./components/Experience"
 import { UI } from "./components/UI"
-
+import { AUDIOS } from "./consts.ts"
 import "./App.css"
 
 function App() {
+  {
+    const _ = Loader
+  }
+  {
+    const _ = useGLTF
+  }
   return (
     <>
       {/* <Stats /> */}
@@ -20,23 +25,17 @@ function App() {
         <color attach="background" args={["#111"]} />
 
         <Suspense>
-            <Experience />
+          <Experience />
         </Suspense>
 
         <EffectComposer>
-            <Bloom mipmapBlur intensity={0.3} luminanceThreshold={1.5} />
+          <Bloom mipmapBlur intensity={0.3} luminanceThreshold={1.5} />
         </EffectComposer>
 
         <Preloader />
       </Canvas>
     </>
   )
-}
-
-export const AUDIOS = {
-  // pop: "sfxs/baloon-pop-48030.mp3",
-  // impact: "sfxs/cinematic-hit-159487-cut.mp3",
-  // throw: "sfxs/axe-slash-1-106748-cut.mp3",
 }
 
 const Preloader = () => {

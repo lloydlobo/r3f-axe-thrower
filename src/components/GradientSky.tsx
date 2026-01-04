@@ -1,7 +1,7 @@
 import { shaderMaterial } from "@react-three/drei"
 import { extend } from "@react-three/fiber"
 import { BackSide, Color } from "three"
-import { degToRad } from "three/src/math/MathUtils"
+import { degToRad } from "three/src/math/MathUtils.js"
 
 export const GradientSky = ({
   colorTop = "#06080d",
@@ -11,8 +11,10 @@ export const GradientSky = ({
   blendMiddle = 0.2,
 }) => {
   return (
+    // @ts-expect-error TS2322: Property depthWrite does not exist on type
     <mesh rotation-x={degToRad(-5)} depthWrite={false} depthTest={false}>
       <sphereGeometry args={[40]} />
+      {/* @ts-expect-error TS2339: Property gradientMaterial does not exist on type JSX.IntrinsicElements */}
       <gradientMaterial
         side={BackSide}
         colorBottom={colorBottom}
