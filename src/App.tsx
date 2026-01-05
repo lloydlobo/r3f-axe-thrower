@@ -2,30 +2,27 @@ import { Suspense } from "react"
 import { Loader, PositionalAudio, useGLTF } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { Bloom, EffectComposer } from "@react-three/postprocessing"
-
+import { Physics } from "@react-three/rapier"
 import { Experience } from "./components/Experience"
 import { UI } from "./components/UI"
 import { AUDIOS } from "./consts.ts"
 import "./App.css"
 
 function App() {
-  {
-    const _ = Loader
-  }
-  {
-    const _ = useGLTF
-  }
   return (
     <>
       {/* <Stats /> */}
       <UI />
+      <Loader />
       {/* Target at -0.1x */}
       <Canvas shadows camera={{ position: [-0.1, 0, 0], fov: 50 }}>
         {/* NOTE: Avoids setting color-scheme css */}
         <color attach="background" args={["#111"]} />
 
         <Suspense>
-          <Experience />
+          <Physics debug={true} colliders={false}>
+            <Experience />
+          </Physics>
         </Suspense>
 
         <EffectComposer>
@@ -49,6 +46,6 @@ const Preloader = () => {
   ))
 }
 
-// useGLTF.preload("models/Axe Small.glb")
+useGLTF.preload("models/Axe Small.glb")
 
 export default App
