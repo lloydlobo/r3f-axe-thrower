@@ -1,8 +1,11 @@
+// noinspection ES6PreferShortImport
+
 import { useRef } from "react"
 import { CameraControls, Environment, Grid, PerspectiveCamera } from "@react-three/drei"
 
 import { GradientSky } from "../components/GradientSky"
-import { AxeController } from "./AxeController.tsx"
+import { AxeController } from "../components/AxeController.tsx"
+import { Target } from "../components/Target.tsx"
 
 export const Experience = () => {
   const controls = useRef(null)
@@ -10,21 +13,12 @@ export const Experience = () => {
   return (
     <>
       <CameraControls ref={controls} />
-
-      {/* NOTE: Position sends the target far away */}
-      {/* NOTE: App |> EffectComposer |> Bloom lights up the orange `color` & `emissive` */}
-      <mesh position-x={10}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial // force-line-break
-          color="orange"
-          emissive="orange"
-          emissiveIntensity={8}
-        />
-      </mesh>
-
       <GradientSky />
 
       <AxeController />
+      <group position-y={-1} position-x={20}>
+        <Target />
+      </group>
 
       {/* Immersion */}
       <Grid // force-line-break

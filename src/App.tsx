@@ -3,6 +3,7 @@ import { Loader, PositionalAudio, useGLTF } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { Bloom, EffectComposer } from "@react-three/postprocessing"
 import { Physics } from "@react-three/rapier"
+
 import { Experience } from "./components/Experience"
 import { UI } from "./components/UI"
 import { AUDIOS } from "./consts.ts"
@@ -46,6 +47,7 @@ const Preloader = () => {
   ))
 }
 
-useGLTF.preload("models/Axe Small.glb")
+useGLTF.preload("models/Axe Small.glb") // in AxeController.tsx
+useGLTF.preload("models/Shield Round.glb") // in Target.tsx
 
 export default App
