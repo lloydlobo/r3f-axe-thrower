@@ -17,13 +17,14 @@ const axeSmallOffsetConfig = {
 export const AxeController = () => {
   const rb = useRef<RapierRigidBody | null>(null) // rigid body
 
+  const [isOffsetAxe, setIsOffsetAxe] = useState<boolean>(true)
+  const axeSmallOffset = isOffsetAxe ? axeSmallOffsetConfig.firstPerson : axeSmallOffsetConfig.default
+
   const axeLaunched = useGame((state) => state.axeLaunched)
   const launchAxe = useGame((state) => state.launchAxe)
 
   const [impact, setImpact] = useState<Vector | null>(null)
-
-  const [isOffsetAxe, setIsOffsetAxe] = useState<boolean>(true)
-  const axeSmallOffset = isOffsetAxe ? axeSmallOffsetConfig.firstPerson : axeSmallOffsetConfig.default
+  const onTargetHit = useGame((state) => state.onTargetHit)
 
   useEffect(() => {
     const onPointerUp = () => {
@@ -53,6 +54,12 @@ export const AxeController = () => {
       rb.current.setAngvel(new Vector3(0, 0, 0), false)
     }
   }) // bind to mouse and also reset after each throw
+
+  useEffect(() => {
+    if (impact) {
+      onTargetHit()
+    }
+  }, [impact, onTargetHit])
 
   return (
     <>

@@ -12,28 +12,47 @@ BALLOON_COLORS.forEach((color) => {
   })
 })
 
-export const useGame = create((set, get) => {
-  return {
-    axeLaunched: false,
+export const useGame = create((set, get) => ({
+  balloons: [],
+  axeLaunched: false,
+  isFirstGame: true,
+  balloonsHit: 0,
+  targetsHit: 0,
+  throws: 0,
 
-    balloons: [],
-
-    launchAxe: () => {
-      if (get().axeLaunched) return
-      set(() => ({ axeLaunched: true }))
-      setTimeout(() => {
-        set(() => ({ axeLaunched: false }))
-      }, 2000)
-    },
-
-    startGame: () => {
-      set(() => ({
-        balloons: new Array(50).fill(0).map((_, index) => ({
-          id: `balloon_${index}_${Math.random()}`,
-          position: new Vector3(randFloat(8, 18), randFloat(-20, 0), randFloatSpread(1)), // spread: [-range/2..range/2]
-          color: BALLOON_COLORS[randInt(0, BALLOON_COLORS.length - 1)],
-        })),
-      }))
-    },
-  }
-})
+  launchAxe: () => {
+    if (get().axeLaunched || get().throws <= 0) return
+    set(() => ({
+      axeLaunched: true,
+      throws: get().throws - 1,
+    }))
+    setTimeout(() => {
+      set(() => ({ axeLaunched: false }))
+    }, 2000)
+  },
+  startGame: () => {
+    console.log("startGame")
+    set(() => ({
+      throws: 5,
+      axeLaunched: false,
+      isFirstGame: false,
+      balloonsHit: 0,
+      targetsHit: 0,
+      balloons: new Array(50).fill(0).map((_, index) => ({
+        id: `balloon_${index}_${Math.random()}`,
+        position: new Vector3(randFloat(8, 18), randFloat(-20, 0), randFloatSpread(1)), // spread: [-range/2..range/2]
+        color: BALLOON_COLORS[randInt(0, BALLOON_COLORS.length - 1)],
+      })),
+    }))
+  },
+  onBalloonHit: () => {
+    set((state) => ({
+      balloonsHit: state.balloonsHit + 1,
+    }))
+  },
+  onTargetHit: () => {
+    set((state) => ({
+      targetsHit: state.targetsHit + 1,
+    }))
+  },
+}))

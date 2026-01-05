@@ -16,12 +16,12 @@ function App() {
       <UI />
       <Loader />
       {/* Target at -0.1x */}
-      <Canvas shadows camera={{ position: [-0.1, 0, 0], fov: 50 }}>
+      <Canvas shadows camera={{ position: true ? [0, 0.5, 10] : [-0.1, 0, 0], fov: 50 }}>
         {/* NOTE: Avoids setting color-scheme css */}
         <color attach="background" args={["#111"]} />
 
         <Suspense>
-          <Physics debug={true} colliders={false}>
+          <Physics debug={false} colliders={false}>
             <Experience />
           </Physics>
         </Suspense>

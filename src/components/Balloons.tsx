@@ -16,8 +16,8 @@ const Balloon = ({ position, color }) => {
   const rb = useRef<RapierRigidBody | null>(null) // rigid body
 
   const { nodes, materials } = useGLTF("models/Balloon.glb")
-
   const [exploded, setExploded] = useState(false)
+  const onBalloonHit = useGame((state) => state.onBalloonHit)
 
   const onIntersectionEnter = useCallback((e: CollisionPayload) => {
     if (e.other.rigidBodyObject?.name === "axe") {
@@ -27,6 +27,12 @@ const Balloon = ({ position, color }) => {
 
   const isCustomMaterial = true
   const customMaterial = isCustomMaterial ? balloonMaterials[color] : materials.phong1SG
+
+  useEffect(() => {
+    if (exploded) {
+      onBalloonHit()
+    }
+  }, [exploded, onBalloonHit])
 
   useEffect(() => {
     if (rb.current) {
