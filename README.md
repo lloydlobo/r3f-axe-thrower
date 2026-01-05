@@ -6,6 +6,8 @@ Copied and modified from [wass08/r3f-axe-throwing-game-final]
 
 - Axe Small by Quaternius (https://poly.pizza/m/o54NXjRI4V)
 - Shield Round by Quaternius (https://poly.pizza/m/lWajrVXcnA)
+- Balloon by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly
+  Pizza (https://poly.pizza/m/d1gDDhM7pTf)
 
 ## Acknowledgments
 

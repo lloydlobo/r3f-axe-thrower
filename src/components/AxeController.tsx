@@ -84,7 +84,10 @@ export const AxeController = () => {
         name="axe"
         colliders="hull"
         type="dynamic"
-        onCollisionEnter={(e) => {
+        // move to target without being impacted by collision with balloons
+        // change `onCollisionEnter` to `onIntersectionEnter`
+        sensor={true}
+        onIntersectionEnter={(e) => {
           if (e.other.rigidBodyObject?.name === "target") {
             rb.current?.setBodyType(0, false) // author set it as 2 (2 messes up next throw as the axe just falls down)
             rb.current?.setLinvel(new Vector3(0, 0, 0), false)

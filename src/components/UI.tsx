@@ -1,8 +1,10 @@
-import reactLogo from "../assets/react.svg"
 import viteLogo from "/vite.svg"
 import "./UI.css"
+import { useGame } from "../hooks/useGame.ts"
 
 export const UI = () => {
+  const startGame = useGame((state) => state.startGame)
+
   return (
     <section className="pointer-events-none fixed inset-0 z-10 flex items-center justify-center">
       <div className="animate-fade-in-down animation-delay-200 pointer-events-auto absolute top-4 left-4 opacity-0 md:top-8 md:left-14">
@@ -22,7 +24,10 @@ export const UI = () => {
           <p className="text-sm text-white/70">
             Become an axe master and break the curse. <br />
           </p>
-          <button className="pointer-events-auto cursor-pointer rounded-lg bg-white/80 px-4 py-2 font-bold text-black shadow-md transition duration-200 hover:bg-white/100">
+          <button
+            onClick={startGame}
+            className="pointer-events-auto cursor-pointer rounded-lg bg-white/80 px-4 py-2 font-bold text-black shadow-md transition duration-200 hover:bg-white/100"
+          >
             Start
           </button>
         </>
