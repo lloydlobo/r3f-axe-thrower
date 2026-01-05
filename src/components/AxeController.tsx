@@ -1,11 +1,13 @@
 import { Gltf } from "@react-three/drei"
-import { type RapierRigidBody, RigidBody } from "@react-three/rapier"
+import { type RapierRigidBody, RigidBody, vec3 } from "@react-three/rapier"
 import { useEffect, useRef, useState } from "react"
 import { useFrame } from "@react-three/fiber"
 import { Quaternion, Vector3 } from "three"
 
 import { useGame } from "../hooks/useGame.ts"
 import { lerp } from "three/src/math/MathUtils"
+import type { Vector } from "three/examples/jsm/physics/RapierPhysics"
+import { VFXEmitter, VFXParticles } from "wawa-vfx"
 
 const axeSmallOffsetConfig = {
   default: new Vector3(0, -0.3, 0),
@@ -17,6 +19,8 @@ export const AxeController = () => {
 
   const axeLaunched = useGame((state) => state.axeLaunched)
   const launchAxe = useGame((state) => state.launchAxe)
+
+  const [impact, setImpact] = useState<Vector | null>(null)
 
   const [isOffsetAxe, setIsOffsetAxe] = useState<boolean>(true)
   const axeSmallOffset = isOffsetAxe ? axeSmallOffsetConfig.firstPerson : axeSmallOffsetConfig.default
@@ -36,6 +40,8 @@ export const AxeController = () => {
       rb.current?.setBodyType(0, false) // 0 = RigidBodyType.Dynamic
       rb.current?.applyImpulse(new Vector3(1, 0.5, 0), true) // Push to right and bit upwards
       rb.current?.applyTorqueImpulse(new Vector3(0, 0, -0.2), true) // Z rotation
+    } else {
+      setImpact(null)
     }
   }, [axeLaunched])
 
@@ -49,21 +55,47 @@ export const AxeController = () => {
   }) // bind to mouse and also reset after each throw
 
   return (
-    <RigidBody
-      ref={rb}
-      name="axe"
-      colliders="hull"
-      type="dynamic"
-      onCollisionEnter={(e) => {
-        if (e.other.rigidBodyObject?.name === "target") {
-          rb.current?.setBodyType(0, false) // author set it as 2 (2 messes up next throw as the axe just falls down)
-          rb.current?.setLinvel(new Vector3(0, 0, 0), false)
-          rb.current?.setAngvel(new Vector3(0, 0, 0), false)
-        } // 0 = RigidBodyType.Dynamic, 2 = RigidBodyType.KinematicPosition
-      }}
-    >
-      <Gltf src="models/Axe Small.glb" position={axeSmallOffset} />
-    </RigidBody>
+    <>
+      {impact && (
+        <group position={vec3(impact)}>
+          <VFXEmitter
+            emitter="sparks"
+            debug={false}
+            settings={{
+              spawnMode: "burst",
+              nbParticles: 8000,
+              duration: 1,
+              size: [0.01, 0.62],
+              startPositionMin: [0, 0, 0],
+              startPositionMax: [0, 0, 0],
+              directionMin: [-1, -1, -1],
+              directionMax: [1, 1, 1],
+              rotationSpeedMin: [-1, -1, -10],
+              rotationSpeedMax: [1, 1, 10],
+              speed: [0.1, 10],
+              particlesLifetime: [0.1, 1],
+              colorStart: ["orange", "orangered"],
+            }}
+          />
+        </group>
+      )}
+      <RigidBody
+        ref={rb}
+        name="axe"
+        colliders="hull"
+        type="dynamic"
+        onCollisionEnter={(e) => {
+          if (e.other.rigidBodyObject?.name === "target") {
+            rb.current?.setBodyType(0, false) // author set it as 2 (2 messes up next throw as the axe just falls down)
+            rb.current?.setLinvel(new Vector3(0, 0, 0), false)
+            rb.current?.setAngvel(new Vector3(0, 0, 0), false)
+            setImpact(rb.current?.translation())
+          } // 0 = RigidBodyType.Dynamic, 2 = RigidBodyType.KinematicPosition
+        }}
+      >
+        <Gltf src="models/Axe Small.glb" position={axeSmallOffset} />
+      </RigidBody>
+    </>
   )
 }
 

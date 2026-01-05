@@ -6,6 +6,7 @@ import { CameraControls, Environment, Grid, PerspectiveCamera } from "@react-thr
 import { GradientSky } from "../components/GradientSky"
 import { AxeController } from "../components/AxeController.tsx"
 import { Target } from "../components/Target.tsx"
+import { RenderMode, VFXParticles } from "wawa-vfx"
 
 export const Experience = () => {
   const controls = useRef(null)
@@ -44,6 +45,18 @@ export const Experience = () => {
         />
       </directionalLight>
       <Environment preset="sunset" environmentIntensity={0.3} />
+
+      {/*  VFXS */}
+      <VFXParticles
+        name="sparks"
+        settings={{
+          fadeAlpha: [0, 1],
+          gravity: [0, -10, 0],
+          intensity: 8,
+          nbParticles: 100_000,
+          renderMode: RenderMode.Billboard, // lib could use a brand type to avoid TS enums
+        }}
+      />
     </>
   )
 }
