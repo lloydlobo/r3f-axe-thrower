@@ -19,7 +19,7 @@ const axeSmallOffsetConfig = {
 export const AxeController = () => {
   const rb = useRef<RapierRigidBody | null>(null) // rigid body
 
-  const [isOffsetAxe, setIsOffsetAxe] = useState<boolean>(true)
+  const [isOffsetAxe, setIsOffsetAxe] = useState<boolean>(false)
   const axeSmallOffset = isOffsetAxe ? axeSmallOffsetConfig.firstPerson : axeSmallOffsetConfig.default
 
   const axeLaunched = useGame((state) => state.axeLaunched)

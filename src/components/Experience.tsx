@@ -17,28 +17,53 @@ export const Experience = () => {
 
   const axeLaunched = useGame((state) => state.axeLaunched)
   const throws = useGame((state) => state.throws) // remaining
+  const isFirstGame = useGame((state) => state.isFirstGame)
 
   type CameraPanType = "none" | "west" | "east"
   const cameraPan: CameraPanType = throws >= 0 ? "east" : "none"
 
   useEffect(() => {
-    if (cameraPan === "none") {
-      if (axeLaunched) controls.current?.setLookAt(-4, 2, -1.5, 10, 1.5, -0.8, true)
-      else controls.current?.setLookAt(-0.1, 0, 0, 0, 0, 0, true)
-    } else if (cameraPan === "east") {
-      if (axeLaunched) controls.current?.setLookAt(9.5, 0, 30, 10, 0, 0, true)
-      else controls.current?.setLookAt(-0.1, 0, 0, 0, 0, 0, true)
-    } else if (cameraPan === "west") {
-      if (axeLaunched) controls.current?.setLookAt(9.5, 0, -30, 10, 0, 0, true)
-      else controls.current?.setLookAt(-0.1, 0, 0, 0, 0, 0, true)
+    if (isFirstGame) {
+      controls.current?.setLookAt(-15, -5, 20, 10, 0, 0, true) // cinematic pan
     } else {
-      throw new Error(`Exhausted CameraPanType. Got ${cameraPan}!`)
+      const isLaunch = axeLaunched || throws === 0
+      const isMobileScreen = window.innerWidth < 1024
+      if (cameraPan === "none") {
+        if (isLaunch) {
+          if (isMobileScreen) controls.current?.setLookAt(-10, 10, 40, 10, 0, 0, true)
+          else controls.current?.setLookAt(-4, 2, -1.5, 10, 1.5, -0.8, true)
+        } else controls.current?.setLookAt(-0.1, 0, 0, 0, 0, 0, true)
+      } else if (cameraPan === "east") {
+        if (isLaunch) {
+          if (isMobileScreen) controls.current?.setLookAt(-10, 10, 40, 10, 0, 0, true)
+          else controls.current?.setLookAt(9.5, 0, 30, 10, 0, 0, true)
+        } else controls.current?.setLookAt(-0.1, 0, 0, 0, 0, 0, true)
+      } else if (cameraPan === "west") {
+        if (isLaunch) {
+          if (isMobileScreen) controls.current?.setLookAt(-10, 10, 40, 10, 0, 0, true)
+          else controls.current?.setLookAt(9.5, 0, -30, 10, 0, 0, true)
+        } else controls.current?.setLookAt(-0.1, 0, 0, 0, 0, 0, true)
+      } else {
+        throw new Error(`Exhausted CameraPanType. Got ${cameraPan}!`)
+      }
     }
-  }, [cameraPan, axeLaunched])
+  }, [cameraPan, axeLaunched, isFirstGame])
 
   return (
     <>
-      <CameraControls ref={controls} />
+      <CameraControls
+        ref={controls}
+        mouseButtons={{
+          left: 0,
+          middle: 0,
+          right: 0,
+        }}
+        touches={{
+          one: 0,
+          two: 0,
+          three: 0,
+        }}
+      />
       <GradientSky />
       <Walls />
       <Balloons />
