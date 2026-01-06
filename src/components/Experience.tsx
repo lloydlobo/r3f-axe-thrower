@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { CameraControls, Environment, Gltf, Grid, PerspectiveCamera } from "@react-three/drei"
-import { RenderMode, VFXParticles } from "wawa-vfx"
+import { RenderMode, VFXEmitter, VFXParticles } from "wawa-vfx"
 
 import { GradientSky } from "../components/GradientSky"
 import { AxeController } from "../components/AxeController.tsx"
@@ -19,7 +19,7 @@ export const Experience = () => {
   const throws = useGame((state) => state.throws) // remaining
 
   type CameraPanType = "none" | "west" | "east"
-  const cameraPan: CameraPanType = throws < 1 ? "west" : "none"
+  const cameraPan: CameraPanType = throws >= 0 ? "east" : "none"
 
   useEffect(() => {
     if (cameraPan === "none") {
@@ -39,7 +39,6 @@ export const Experience = () => {
   return (
     <>
       <CameraControls ref={controls} />
-
       <GradientSky />
       <Walls />
       <Balloons />
@@ -54,7 +53,7 @@ export const Experience = () => {
         scale={3}
         rotation-y={degToRad(-90)}
         position-x={8}
-        position-y={-16}
+        position-y={-24}
       />
 
       {/* Immersion */}
@@ -80,6 +79,51 @@ export const Experience = () => {
           intensity: 8,
           nbParticles: 100_000,
           renderMode: RenderMode.Billboard, // lib could use a brand type to avoid TS enums
+        }}
+      />
+      <VFXParticles
+        name="stars"
+        geometry={<circleGeometry args={[0.1, 0.5]} />}
+        settings={{
+          fadeAlpha: [0.5, 0.5],
+          fadeSize: [0.5, 0.5],
+          gravity: [0, 0.2, 0],
+          intensity: 5,
+          nbParticles: 5_000,
+          renderMode: RenderMode.Billboard,
+        }}
+      />
+      <VFXParticles
+        name="axes"
+        geometry={<circleGeometry args={[0.05, 0.2]} />}
+        settings={{
+          fadeAlpha: [0, 0],
+          fadeSize: [0, 0.5],
+          intensity: 5,
+          nbParticles: 200,
+          renderMode: RenderMode.Mesh,
+        }}
+      />
+      <VFXEmitter
+        emitter="stars"
+        settings={{
+          duration: 10,
+          delay: 0,
+          nbParticles: 5000,
+          spawnMode: "time",
+          loop: true,
+          startPositionMin: [-20, -20, -20],
+          startPositionMax: [20, 20, 20],
+          startRotationMin: [0, 0, 0],
+          startRotationMax: [0, 0, 0],
+          particlesLifetime: [4, 10],
+          speed: [0, 0.2],
+          directionMin: [-1, -1, -1],
+          directionMax: [1, 1, 1],
+          rotationSpeedMin: [0, 0, 0],
+          rotationSpeedMax: [0, 0, 0],
+          colorStart: ["#ffffff", "#b7b0e3", "pink"],
+          size: [0.01, 0.05],
         }}
       />
     </>

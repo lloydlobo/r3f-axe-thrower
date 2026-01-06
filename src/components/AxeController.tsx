@@ -91,9 +91,7 @@ export const AxeController = () => {
         name="axe"
         colliders="hull"
         type="dynamic"
-        // move to target without being impacted by collision with balloons
-        // change `onCollisionEnter` to `onIntersectionEnter`
-        sensor={true}
+        sensor={true} // move to target without being impacted by collision with balloons
         onIntersectionEnter={(e) => {
           if (e.other.rigidBodyObject?.name === "target") {
             rb.current?.setBodyType(0, false) // author set it as 2 (2 messes up next throw as the axe just falls down)
@@ -101,9 +99,32 @@ export const AxeController = () => {
             rb.current?.setAngvel(new Vector3(0, 0, 0), false)
             setImpact(rb.current?.translation())
           } // 0 = RigidBodyType.Dynamic, 2 = RigidBodyType.KinematicPosition
-        }}
+        }} // changed `onCollisionEnter` to `onIntersectionEnter`
       >
         <Gltf src="models/Axe Small.glb" position={axeSmallOffset} />
+        {axeLaunched && !impact && (
+          <group position={axeSmallOffset}>
+            <VFXEmitter
+              emitter="axes"
+              settings={{
+                loop: true,
+                spawnMode: "time",
+                nbParticles: 82,
+                particlesLifetime: [1, 1],
+                duration: 0.5,
+                size: [1, 1],
+                startPositionMin: [0, 0, 0],
+                startPositionMax: [0, 0, 0],
+                directionMin: [0, 0, 0],
+                directionMax: [0, 0, 0],
+                startRotationMin: [0, 0, 0],
+                startRotationMax: [0, 0, 0],
+                speed: [0.1, 2],
+                colorStart: ["#424242"],
+              }}
+            />
+          </group>
+        )}
       </RigidBody>
     </>
   )
