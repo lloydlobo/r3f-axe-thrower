@@ -1,11 +1,12 @@
 import { balloonMaterials, useGame } from "../hooks/useGame.ts"
-import { useGLTF } from "@react-three/drei"
+import { PositionalAudio, useGLTF } from "@react-three/drei"
 import { type CollisionPayload, ConvexHullCollider, type RapierRigidBody, RigidBody } from "@react-three/rapier"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { VFXEmitter } from "wawa-vfx"
 import { Vector3 } from "three"
 import { useFrame } from "@react-three/fiber"
 import { randFloat } from "three/src/math/MathUtils"
+import { AUDIOS } from "../consts.ts"
 
 export const Balloons = () => {
   const balloons = useGame((state) => state.balloons)
@@ -71,6 +72,7 @@ const Balloon = ({ position, color }) => {
     >
       {exploded && (
         <>
+          <PositionalAudio url={AUDIOS.pop} autoplay={true} loop={false} distance={10} />
           <VFXEmitter
             emitter="sparks"
             settings={{

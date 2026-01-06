@@ -1,13 +1,15 @@
-import { Gltf } from "@react-three/drei"
+import { Gltf, PositionalAudio, type PositionalAudioProps } from "@react-three/drei"
 import { type RapierRigidBody, RigidBody, vec3 } from "@react-three/rapier"
-import { useEffect, useRef, useState } from "react"
-import { useFrame } from "@react-three/fiber"
+import { type Ref, useEffect, useRef, useState } from "react"
+import { type ThreeElements, useFrame } from "@react-three/fiber"
 import { Quaternion, Vector3 } from "three"
 
 import { useGame } from "../hooks/useGame.ts"
 import { lerp } from "three/src/math/MathUtils"
 import type { Vector } from "three/examples/jsm/physics/RapierPhysics"
 import { VFXEmitter, VFXParticles } from "wawa-vfx"
+import { AUDIOS } from "../consts.ts"
+import { PositionalAudioHelper } from "three/examples/jsm/helpers/PositionalAudioHelper"
 
 const axeSmallOffsetConfig = {
   default: new Vector3(0, -0.3, 0),
@@ -26,6 +28,9 @@ export const AxeController = () => {
   const [impact, setImpact] = useState<Vector | null>(null)
   const onTargetHit = useGame((state) => state.onTargetHit)
 
+  const sfxHit = useRef(null)
+  const sfxThrow = useRef(null)
+
   useEffect(() => {
     const onPointerUp = () => {
       launchAxe()
@@ -41,6 +46,8 @@ export const AxeController = () => {
       rb.current?.setBodyType(0, false) // 0 = RigidBodyType.Dynamic
       rb.current?.applyImpulse(new Vector3(1, 0.5, 0), true) // Push to right and bit upwards
       rb.current?.applyTorqueImpulse(new Vector3(0, 0, -0.2), true) // Z rotation
+
+      sfxThrow.current?.play()
     } else {
       setImpact(null)
     }
@@ -63,6 +70,7 @@ export const AxeController = () => {
 
   return (
     <>
+      <PositionalAudio url={AUDIOS.impact} autoplay={false} ref={sfxHit} loop={false} distance={10} />
       {impact && (
         <group position={vec3(impact)}>
           <VFXEmitter
@@ -97,10 +105,15 @@ export const AxeController = () => {
             rb.current?.setBodyType(0, false) // author set it as 2 (2 messes up next throw as the axe just falls down)
             rb.current?.setLinvel(new Vector3(0, 0, 0), false)
             rb.current?.setAngvel(new Vector3(0, 0, 0), false)
+
             setImpact(rb.current?.translation())
+
+            sfxHit.current?.stop()
+            sfxHit.current?.play()
           } // 0 = RigidBodyType.Dynamic, 2 = RigidBodyType.KinematicPosition
         }} // changed `onCollisionEnter` to `onIntersectionEnter`
       >
+        <PositionalAudio url={AUDIOS.throw} autoplay={false} ref={sfxThrow} loop={false} distance={50} />
         <Gltf src="models/Axe Small.glb" position={axeSmallOffset} />
         {axeLaunched && !impact && (
           <group position={axeSmallOffset}>

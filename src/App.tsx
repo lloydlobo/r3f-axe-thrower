@@ -50,6 +50,6 @@ const Preloader = () => {
 useGLTF.preload("models/Axe Small.glb") // in AxeController.tsx
 useGLTF.preload("models/Shield Round.glb") // in Target.tsx
 useGLTF.preload("models/Balloon.glb") // in Balloons.tsx
-useGLTF.preload("models/Forest.glb") // in TODO ***.tsx
+useGLTF.preload("models/Forest.glb") // in Experience.tsx
 
 export default App
