@@ -1,7 +1,7 @@
 // noinspection ES6PreferShortImport
 
 import { useEffect, useRef } from "react"
-import { CameraControls, Environment, Grid, PerspectiveCamera } from "@react-three/drei"
+import { CameraControls, Environment, Gltf, Grid, PerspectiveCamera } from "@react-three/drei"
 import { RenderMode, VFXParticles } from "wawa-vfx"
 
 import { GradientSky } from "../components/GradientSky"
@@ -10,14 +10,16 @@ import { Target } from "../components/Target.tsx"
 import { Balloons } from "../components/Balloons.tsx"
 import { Walls } from "../components/Walls.tsx"
 import { useGame } from "../hooks/useGame.ts"
+import { degToRad } from "three/src/math/MathUtils.js"
 
 export const Experience = () => {
   const controls = useRef<CameraControls | null>(null)
 
   const axeLaunched = useGame((state) => state.axeLaunched)
-  const throws = useGame((state) => state.throws)
+  const throws = useGame((state) => state.throws) // remaining
+
   type CameraPanType = "none" | "west" | "east"
-  const cameraPan: CameraPanType = throws < 3 ? "west" : "none"
+  const cameraPan: CameraPanType = throws < 1 ? "west" : "none"
 
   useEffect(() => {
     if (cameraPan === "none") {
@@ -32,7 +34,7 @@ export const Experience = () => {
     } else {
       throw new Error(`Exhausted CameraPanType. Got ${cameraPan}!`)
     }
-  }, [axeLaunched, cameraPan])
+  }, [cameraPan, axeLaunched])
 
   return (
     <>
@@ -45,6 +47,15 @@ export const Experience = () => {
       <group position-y={-1} position-x={20}>
         <Target />
       </group>
+      <Gltf
+        src="models/Forest.glb"
+        castShadow={true}
+        receiveShadow={true}
+        scale={3}
+        rotation-y={degToRad(-90)}
+        position-x={8}
+        position-y={-16}
+      />
 
       {/* Immersion */}
       <Grid position-y={-10} infiniteGrid sectionColor="#999" cellColor="#555" fadeStrength={5} />
